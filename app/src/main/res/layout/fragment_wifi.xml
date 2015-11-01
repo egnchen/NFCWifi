@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/writeTag_image"
+        android:background="@mipmap/wifi_enabled" />
+
+    <Spinner
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/writeTag_spinner"
+        android:layout_below="@+id/writeTag_image" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/writeTag_etPwd"
+        android:layout_below="@+id/writeTag_spinner"
+        android:layout_alignLeft="@+id/writeTag_image"
+        android:layout_alignStart="@+id/writeTag_image"
+        android:layout_alignRight="@+id/writeTag_image"
+        android:layout_alignEnd="@+id/writeTag_image"
+        android:hint="password here..." />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/writeTag_llSecurity"
+        android:layout_below="@id/writeTag_etPwd">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Security"
+            android:layout_gravity="center"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/writeTag_rbNone"
+            android:text="none"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/writeTag_rbWEP"
+            android:text="WEP"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/writeTag_rbWPA2"
+            android:text="WPA/WPA2_PSK"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="write it!"
+        android:id="@+id/writeTag_btn"
+        android:layout_below="@+id/writeTag_llSecurity"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
