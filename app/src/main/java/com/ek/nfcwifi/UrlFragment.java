@@ -39,7 +39,7 @@ public class UrlFragment extends WriteContentFragment {
         btnWww.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etUrl.setText("www." + etUrl.getText());
+                etUrl.setText("www." + etUrl.getText());etUrl.setSelection(3);
             }
         });
         btnCom.setOnClickListener(new View.OnClickListener() {
@@ -58,25 +58,17 @@ public class UrlFragment extends WriteContentFragment {
             @Override
             public void onClick(View v) {
                 try {
-                    URL url = new URL(etUrl.getText().toString());
-                    submit(nfcAdmin.getRecord(etUrl.getText().toString()));
+                    String u=etUrl.getText().toString();
+                    if(!(u.startsWith("http://")||u.startsWith("https://")))
+                        u="http://"+u;
+                    URL url = new URL(u);
+                    submit(nfcAdmin.getRecord(u));
                 } catch (MalformedURLException e) {
                     Toast.makeText(dad.getApplicationContext(), "Invalid url string.", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-        etUrl.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                try {
-                    URL url = new URL(v.getText().toString());
-                    etUrl.setTextColor(Color.BLACK);
-                } catch (MalformedURLException e){}
-                return false;
-            }
-        });
-
         return view;
     }
 }

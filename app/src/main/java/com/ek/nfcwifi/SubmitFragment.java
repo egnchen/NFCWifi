@@ -1,7 +1,7 @@
 package com.ek.nfcwifi;
 
 
-import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,21 +21,23 @@ import java.util.ArrayList;
 public class SubmitFragment extends Fragment {
 
     private NfcAdmin nfcAdmin;
+    MainActivity dad;
 
     ListView list;
     Button btnSubmit;
-    LinearLayout listUnit;
 
     ArrayList<NfcAdmin.myNfcRecord> records=new ArrayList<NfcAdmin.myNfcRecord>();
 
 
     public void addContent(NfcAdmin.myNfcRecord record) {
         records.add(record);
+        nfcAdmin.appendRecord(record);
         //if(list!=null) Toast.makeText(this.getActivity(),list.getCount(),Toast.LENGTH_SHORT).show();
     }
 
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        dad=(MainActivity)getActivity();
         nfcAdmin = ((MainActivity) getActivity()).getNfcAdmin();
         View view = inflater.inflate(R.layout.fragment_submit, container, false);
         list=(ListView)view.findViewById(R.id.submit_list);
@@ -60,27 +61,32 @@ public class SubmitFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 //main part
-                LinearLayout ll=(LinearLayout)inflater.inflate(R.layout.submit_unit,list,false);
-                ImageView pic=(ImageView)ll.getChildAt(0);
-                TextView tvName=(TextView)(((LinearLayout) ll.getChildAt(1)).getChildAt(0));
-                TextView tvSub=(TextView)(((LinearLayout) ll.getChildAt(1)).getChildAt(1));
+                LinearLayout ll=(LinearLayout)inflater.inflate(R.layout.submit_unit, list, false);
+                TextView tvName=(TextView)ll.getChildAt(0);
+                TextView tvSub=(TextView)ll.getChildAt(1);
                 switch(records.get(position).msgType){
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_WIFI:
-                        pic.setImageDrawable(getResources().getDrawable(R.mipmap.wifi_enabled));
+                        ll.setBackgroundColor(Color.BLUE);
                         tvName.setText("WIFI");
                         break;
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_URL:
-                        pic.setImageDrawable(getResources().getDrawable(R.mipmap.url));
+                        ll.setBackgroundColor(Color.RED);
                         tvName.setText("URL");
                         break;
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_STARTAPP:
-                        pic.setImageDrawable(getResources().getDrawable(R.mipmap.app));
+                        ll.setBackgroundColor(Color.GREEN);
                         tvName.setText("APP");
                         break;
                     default:
                 }
                 tvSub.setText("    "+records.get(position).toString());
                 return ll;
+            }
+        });
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dad.setToWrite();
             }
         });
         return view;

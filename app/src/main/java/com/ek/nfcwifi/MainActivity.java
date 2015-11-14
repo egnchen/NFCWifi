@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
+import android.nfc.NfcAdapter;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,14 +24,12 @@ public class MainActivity extends ActionBarActivity {
     private PendingIntent mPendingIntent;
     private WifiAdmin wifiAdmin;
     private NfcAdmin nfcAdmin;
-    private int nfcState = 0;
+    private boolean nfcState = false;
+    //f=read,t=write
 
     private ViewPager viewPager;
     private SubmitFragment submitFragment;
     private AlertDialog dialog;
-    private ProgressDialog loadingDialog;
-
-    WifiConfiguration w;
 
     public WifiAdmin getWifiAdmin() {
         return wifiAdmin;
@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onPageSelected(int position) {
-                nfcState = position;
+                nfcState = position != 0;
                 if (position == 0) wifiAdmin.openWifi();
             }
 
@@ -102,7 +102,7 @@ public class MainActivity extends ActionBarActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                nfcState = 1;
+                nfcState = false;
             }
         });
 
@@ -131,55 +131,56 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        switch (nfcState) {
-            case 2:
-                //写tag
-                if (dialog.isShowing()) dialog.dismiss();
-                try {
-                    nfcAdmin.writeTag(intent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                nfcState = 1;
-                break;
-            case 0:
-                //读tag
-                wifiAdmin.openWifi();
-                while (!wifiAdmin.getmWifiManager().isWifiEnabled()) ;
-                w = nfcAdmin.readTag(intent);
-                wifiAdmin.connectWifi(wifiAdmin.addWifiConf(w.SSID, w.preSharedKey));
-                final Handler handler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        if (msg.what == 0)
-                            Toast.makeText(getApplicationContext(), "Failed to connect " + w.SSID, Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(getApplicationContext(), "Successfully connected to" + w.SSID, Toast.LENGTH_LONG).show();
-                        super.handleMessage(msg);
-                    }
-                };
-                //use a progress dialog
-                //TODO debug this
-                Toast.makeText(this, "trying to connect " + w.SSID, Toast.LENGTH_SHORT).show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.currentThread().sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+        if(!(intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)||
+                intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)||
+                intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED))) return;
+        if (nfcState) {
+            //写tag
+            if (dialog.isShowing()) dialog.dismiss();
+            try {
+                nfcAdmin.writeTag(intent);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //读tag
+            wifiAdmin.openWifi();
+            nfcAdmin.readTag(intent);
+                    /*while (!wifiAdmin.getmWifiManager().isWifiEnabled()) ;
+                    w = nfcAdmin.readTag(intent);
+                    wifiAdmin.connectWifi(wifiAdmin.addWifiConf(w.SSID, w.preSharedKey));*/
+                    /*final Handler handler = new Handler() {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            if (msg.what == 0)
+                                Toast.makeText(getApplicationContext(), "Failed to connect " + w.SSID, Toast.LENGTH_LONG).show();
+                            else
+                                Toast.makeText(getApplicationContext(), "Successfully connected to" + w.SSID, Toast.LENGTH_LONG).show();
+                            super.handleMessage(msg);
                         }
-                        System.out.println("5000ms passed.");
-                        if (!wifiAdmin.getWifiInfo().getSSID().contains(w.SSID))
-                            handler.sendEmptyMessage(0);//failed
-                        else handler.sendEmptyMessage(1);//succeed
-                    }
-                }).start();
-        }
+                    };*/
+            //use a progress dialog
+            //TODO debug this
+                    /*Toast.makeText(this, "trying to connect " + w.SSID, Toast.LENGTH_SHORT).show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.currentThread().sleep(7000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("7000ms passed.");
+                            if (!wifiAdmin.getWifiInfo().getSSID().contains(w.SSID))
+                                handler.sendEmptyMessage(0);//failed
+                            else handler.sendEmptyMessage(1);//succeed
+                        }
+                    }).start();*/
+         }
     }
 
     public void setToWrite() {
-        nfcState = 2;//ready to write
+        nfcState = true;//ready to write
         dialog.show();
     }
 

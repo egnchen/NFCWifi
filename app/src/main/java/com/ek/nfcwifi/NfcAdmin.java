@@ -42,27 +42,28 @@ public class NfcAdmin {
 
     public NfcAdapter getNfcAdapter(){return nfcAdapter;}
 
-    WifiConfiguration readTag(Intent intent){
+    ArrayList<myNfcRecord> readTag(Intent intent) {
         Parcelable[] rawArray = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         NdefMessage mNdefMsg = (NdefMessage)rawArray[0];
         NdefRecord[] mNdefRecord = mNdefMsg.getRecords();
-        try {
-            for(NdefRecord n:mNdefRecord){
+        ArrayList<myNfcRecord> rec=new ArrayList<myNfcRecord>();
+            for(NdefRecord n:mNdefRecord) {
                 Log.i(context.getPackageName(), n.toString());
-                if(n!=null&&n.getTnf()==NdefRecord.TNF_WELL_KNOWN){
-                    Uri uri=n.toUri();
-                    Log.i(context.getPackageName(),uri.toString());
-                    if(uri.getScheme().equals("eknfc")&&uri.getHost().equals("wifi")) {
-                        JSONObject j = new JSONObject(uri.toString().substring(uri.getScheme().length()+uri.getHost().length()+4));
-                        WifiConfiguration conf = WifiAdmin.getWifiConfFromJson(j);
-                        return conf;
+                if (n != null && n.getTnf() == NdefRecord.TNF_WELL_KNOWN) {
+                    Uri uri = n.toUri();
+                    Log.i(context.getPackageName(), uri.toString());
+                    if (uri.getScheme().equals("eknfc")) {
+                        if (uri.getHost().equals("wifi")) {
+                            try {
+                                rec.add(getRecord(new JSONObject(uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4))));
+                            } catch (JSONException e) {
+                                Log.e(context.getPackageName(),uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4));
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
@@ -94,6 +95,7 @@ public class NfcAdmin {
 
     public myNfcRecord getRecord(WifiConfiguration conf){return new myNfcRecord(conf);}
     public myNfcRecord getRecord(String url){return new myNfcRecord(url);}
+    public myNfcRecord getRecord(JSONObject j){return getRecord(WifiAdmin.getWifiConfFromJson(j));}
 
     public class myNfcRecord{
         NdefRecord ndefRecord;
