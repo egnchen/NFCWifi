@@ -31,7 +31,7 @@ public class SubmitFragment extends Fragment {
 
     public void addContent(NfcAdmin.myNfcRecord record) {
         records.add(record);
-        nfcAdmin.appendRecord(record);
+        dad.getNfcAdmin().appendRecord(record);
         //if(list!=null) Toast.makeText(this.getActivity(),list.getCount(),Toast.LENGTH_SHORT).show();
     }
 

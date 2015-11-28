@@ -39,7 +39,7 @@ public class UrlFragment extends WriteContentFragment {
         btnWww.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etUrl.setText("www." + etUrl.getText());etUrl.setSelection(3);
+                etUrl.setText("www." + etUrl.getText());etUrl.setSelection(4);
             }
         });
         btnCom.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +62,8 @@ public class UrlFragment extends WriteContentFragment {
                     if(!(u.startsWith("http://")||u.startsWith("https://")))
                         u="http://"+u;
                     URL url = new URL(u);
-                    submit(nfcAdmin.getRecord(u));
+                    Toast.makeText(dad,"prot="+url.getProtocol()+" host="+url.getHost(),Toast.LENGTH_SHORT).show();
+                    submit(nfcAdmin.getRecord_url(u));
                 } catch (MalformedURLException e) {
                     Toast.makeText(dad.getApplicationContext(), "Invalid url string.", Toast.LENGTH_SHORT).show();
                 }

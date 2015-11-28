@@ -24,6 +24,7 @@ public class MainActivity extends ActionBarActivity {
     private PendingIntent mPendingIntent;
     private WifiAdmin wifiAdmin;
     private NfcAdmin nfcAdmin;
+
     private boolean nfcState = false;
     //f=read,t=write
 
@@ -44,9 +45,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         //ui相关
         setContentView(R.layout.activity_main);
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-
-
         final ArrayList<String> titleList = new ArrayList<String>();
         titleList.add("READ");
         titleList.add("WIFI");
@@ -74,8 +74,6 @@ public class MainActivity extends ActionBarActivity {
                 return titleList.get(position);
             }
         };
-
-
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -92,7 +90,6 @@ public class MainActivity extends ActionBarActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-
 
         //create a dialog to use
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -111,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
         //nfc标签前台抓取相关设置
         mPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        //wifi设置
+        //wifi相关
         wifiAdmin = new WifiAdmin(this);
         wifiAdmin.openWifi();
     }

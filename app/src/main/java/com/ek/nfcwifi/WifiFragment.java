@@ -76,7 +76,7 @@ public class WifiFragment extends WriteContentFragment{
                 if(SSID_chosen!=null){
                     if(etPwd.getText().length()>=8)
                         //dad.setToWrite(wifiAdmin.createConf(SSID_chosen,etPwd.getText().toString()));
-                        submit(nfcAdmin.getRecord(wifiAdmin.createConf(SSID_chosen,etPwd.getText().toString())));
+                        submit(nfcAdmin.getRecord_wifi(wifiAdmin.createConf(SSID_chosen,etPwd.getText().toString())));
                     else
                         Toast.makeText(dad, "Password at least 8 chars.",Toast.LENGTH_SHORT).show();
                 }
