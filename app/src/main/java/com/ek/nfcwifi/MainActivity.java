@@ -2,25 +2,20 @@ package com.ek.nfcwifi;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
 import android.nfc.NfcAdapter;
-import android.nfc.tech.NfcA;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
+    public static MainActivity myInstance;
     private PendingIntent mPendingIntent;
     private WifiAdmin wifiAdmin;
     private NfcAdmin nfcAdmin;
@@ -43,9 +38,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myInstance=this;
         //ui相关
         setContentView(R.layout.activity_main);
-
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         final ArrayList<String> titleList = new ArrayList<String>();
         titleList.add("READ");
@@ -63,12 +58,10 @@ public class MainActivity extends ActionBarActivity {
             public int getCount() {
                 return 4;
             }
-
             @Override
             public Fragment getItem(int position) {
                 return fragments.get(position);
             }
-
             @Override
             public CharSequence getPageTitle(int position) {
                 return titleList.get(position);
@@ -77,20 +70,16 @@ public class MainActivity extends ActionBarActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
             public void onPageSelected(int position) {
                 nfcState = position != 0;
                 if (position == 0) wifiAdmin.openWifi();
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
-
         //create a dialog to use
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("put your tag...");
@@ -143,6 +132,10 @@ public class MainActivity extends ActionBarActivity {
             //读tag
             wifiAdmin.openWifi();
             nfcAdmin.readTag(intent);
+            Intent startActivityIntent=new Intent();
+            startActivityIntent.setClass(MainActivity.this,UserActivity.class);
+            startActivity(startActivityIntent);
+
                     /*while (!wifiAdmin.getmWifiManager().isWifiEnabled()) ;
                     w = nfcAdmin.readTag(intent);
                     wifiAdmin.connectWifi(wifiAdmin.addWifiConf(w.SSID, w.preSharedKey));*/

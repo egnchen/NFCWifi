@@ -9,10 +9,10 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:minHeight="200dp"
-        android:background="@color/dim_foreground_material_dark"
         android:id="@+id/submit_list"
         android:layout_height="0dp"
-        android:layout_width="wrap_content" />
+        android:layout_width="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Display1" />
 
     <Button
         android:layout_width="wrap_content"

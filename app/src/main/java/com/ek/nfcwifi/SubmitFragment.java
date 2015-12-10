@@ -61,7 +61,7 @@ public class SubmitFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 //main part
-                LinearLayout ll=(LinearLayout)inflater.inflate(R.layout.submit_unit, list, false);
+                LinearLayout ll= (convertView==null) ? (LinearLayout)inflater.inflate(R.layout.submit_unit, list, false) : (LinearLayout)convertView;
                 TextView tvName=(TextView)ll.getChildAt(0);
                 TextView tvSub=(TextView)ll.getChildAt(1);
                 switch(records.get(position).msgType){

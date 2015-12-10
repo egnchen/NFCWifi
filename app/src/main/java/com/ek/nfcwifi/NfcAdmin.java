@@ -28,8 +28,9 @@ public class NfcAdmin {
     Context context;
     
     private ArrayList<myNfcRecord> RecordList=new ArrayList<myNfcRecord>();
-
+    public ArrayList<myNfcRecord> getRecordList(){return RecordList;}
     private ArrayList<myNfcRecord> RecordList_get=new ArrayList<myNfcRecord>();
+    public ArrayList<myNfcRecord> getRecordList_get(){return RecordList_get;}
     
     NfcAdmin(Context context){
         this.context=context;
@@ -51,8 +52,7 @@ public class NfcAdmin {
             if (n != null && n.getTnf() == NdefRecord.TNF_WELL_KNOWN) {
                 Uri uri = n.toUri();
                 Log.i(context.getPackageName(), uri.toString());
-                if (uri.getScheme().equals("eknfc")) {
-                    if (uri.getHost().equals("wifi")) {
+                if (uri.getScheme().equals("eknfc")&&uri.getHost().equals("wifi")) {
                         try {
                             JSONObject j=new JSONObject(uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4));
                             RecordList_get.add(getRecord_wifi(j));
@@ -60,7 +60,6 @@ public class NfcAdmin {
                             Log.e(context.getPackageName(),uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4));
                             e.printStackTrace();
                         }
-                    }
                 }
                 else RecordList_get.add(getRecord_url(uri.toString())); //url message
             }
