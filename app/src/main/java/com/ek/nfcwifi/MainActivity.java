@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class MainActivity extends ActionBarActivity {
     private WifiAdmin wifiAdmin;
     private NfcAdmin nfcAdmin;
 
-    private boolean nfcState = false;
-    //f=read,t=write
+    private int nfcState = 0;
+    //0=write,1=read,>=2=null
 
     private ViewPager viewPager;
     private SubmitFragment submitFragment;
@@ -43,15 +44,15 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         final ArrayList<String> titleList = new ArrayList<String>();
+        titleList.add("SUBMIT");
         titleList.add("READ");
         titleList.add("WIFI");
         titleList.add("URL");
-        titleList.add("SUBMIT");
         final ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(submitFragment = new SubmitFragment());
         fragments.add(new ReadTagFragment());
         fragments.add(new WifiFragment());
         fragments.add(new UrlFragment());
-        fragments.add(submitFragment = new SubmitFragment());
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(
                 getSupportFragmentManager()) {
             @Override
@@ -73,13 +74,14 @@ public class MainActivity extends ActionBarActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
             public void onPageSelected(int position) {
-                nfcState = position != 0;
+                nfcState=position;
                 if (position == 0) wifiAdmin.openWifi();
             }
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+        viewPager.setCurrentItem(1);
         //create a dialog to use
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("put your tag...");
@@ -88,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                nfcState = false;
+                nfcState = 0;
             }
         });
 
@@ -120,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
         if(!(intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)||
                 intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)||
                 intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED))) return;
-        if (nfcState) {
+        if (nfcState==0) {
             //写tag
             if (dialog.isShowing()) dialog.dismiss();
             try {
@@ -128,14 +130,15 @@ public class MainActivity extends ActionBarActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        } else if(nfcState==1){
             //读tag
             wifiAdmin.openWifi();
             nfcAdmin.readTag(intent);
-            Intent startActivityIntent=new Intent();
-            startActivityIntent.setClass(MainActivity.this,UserActivity.class);
-            startActivity(startActivityIntent);
-
+            if(nfcAdmin.getRecordList().size()>0) {
+                Intent startActivityIntent = new Intent();
+                startActivityIntent.setClass(MainActivity.this, UserActivity.class);
+                startActivity(startActivityIntent);
+            } else Toast.makeText(this,"No NDEF Message found.",Toast.LENGTH_SHORT).show();
                     /*while (!wifiAdmin.getmWifiManager().isWifiEnabled()) ;
                     w = nfcAdmin.readTag(intent);
                     wifiAdmin.connectWifi(wifiAdmin.addWifiConf(w.SSID, w.preSharedKey));*/
@@ -170,7 +173,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setToWrite() {
-        nfcState = true;//ready to write
+        nfcState = 0;//ready to write
         dialog.show();
     }
 

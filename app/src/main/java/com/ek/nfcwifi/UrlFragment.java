@@ -62,7 +62,7 @@ public class UrlFragment extends WriteContentFragment {
                     if(!(u.startsWith("http://")||u.startsWith("https://")))
                         u="http://"+u;
                     URL url = new URL(u);
-                    Toast.makeText(dad,"prot="+url.getProtocol()+" host="+url.getHost(),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(dad,"prot="+url.getProtocol()+" host="+url.getHost(),Toast.LENGTH_SHORT).show();
                     submit(nfcAdmin.getRecord_url(u));
                 } catch (MalformedURLException e) {
                     Toast.makeText(dad.getApplicationContext(), "Invalid url string.", Toast.LENGTH_SHORT).show();

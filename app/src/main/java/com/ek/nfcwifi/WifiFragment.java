@@ -14,10 +14,10 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-
 /**
  * Created by eyeKill on 15/10/16.
  */
+
 public class WifiFragment extends WriteContentFragment{
     Spinner spinner;
     EditText etPwd;
@@ -118,5 +118,4 @@ public class WifiFragment extends WriteContentFragment{
             }
         }
     }
-
 }

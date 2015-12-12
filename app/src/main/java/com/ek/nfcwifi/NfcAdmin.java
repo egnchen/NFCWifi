@@ -99,12 +99,22 @@ public class NfcAdmin {
     public myNfcRecord getRecord_url(String url){return new myNfcRecord(url);}
     public class myNfcRecord{
         NdefRecord ndefRecord;
-        int msgType;
+        private int msgType;
         String value;
 
         public static final int EKNFC_TYPE_WIFI=1;
         public static final int EKNFC_TYPE_URL=2;
         public static final int EKNFC_TYPE_STARTAPP=3;
+
+        public int getmsgType(){return msgType;}
+        public String getmsgTypeString(){
+            switch(msgType){
+                case EKNFC_TYPE_WIFI: return "WIFI";
+                case EKNFC_TYPE_URL: return "URL";
+                case EKNFC_TYPE_STARTAPP: return "APP";
+                default:return null;
+            }
+        }
 
         public myNfcRecord(WifiConfiguration conf){
             String url_scheme="eknfc";

@@ -29,6 +29,5 @@ public class WriteContentFragment extends Fragment{
 
     void submit(NfcAdmin.myNfcRecord record){
         submitFragment.addContent(record);
-        submitFragment.list.postInvalidate();
     }
 }

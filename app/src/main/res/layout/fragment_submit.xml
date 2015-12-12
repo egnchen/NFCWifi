@@ -1,24 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:gravity="center">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:gravity="center">
 
-    <ListView
-        android:layout_weight="3"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="30dp"
-        android:minHeight="200dp"
-        android:id="@+id/submit_list"
-        android:layout_height="0dp"
-        android:layout_width="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Display1" />
+    <StackView
+        android:layout_width="match_parent"
+        android:id="@+id/submit_stackList"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_height="match_parent" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_weight="0.5"
-        android:layout_margin="30dp"
-        android:text="write"
+        android:layout_height="wrap_content"
+        android:text="write all"
         android:id="@+id/submit_btnSubmit"
-        android:layout_height="0dp" />
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="erase this"
+        android:layout_alignParentRight="true"
+        android:id="@+id/submit_btnErase"
+        android:layout_above="@id/submit_btnSubmit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/submit_tvIndex"
+        android:layout_above="@+id/submit_btnErase"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/submit_tvContent"
+        android:layout_above="@id/submit_tvIndex"
+        android:layout_alignRight="@id/submit_tvIndex"
+        android:layout_alignEnd="@id/submit_tvIndex" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/submit_tvType"
+        android:layout_above="@id/submit_tvContent"
+        android:layout_alignRight="@id/submit_tvIndex"
+        android:layout_alignEnd="@id/submit_tvIndex" />
+</RelativeLayout>

@@ -1,16 +1,16 @@
 package com.ek.nfcwifi;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.StackView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,8 +23,10 @@ public class SubmitFragment extends Fragment {
     private NfcAdmin nfcAdmin;
     MainActivity dad;
 
-    ListView list;
-    Button btnSubmit;
+    StackView stacklist;
+    Button btnSubmit,btnErase;
+    TextView tvIndex,tvContent,tvType;
+    int idOffset=106;
 
     ArrayList<NfcAdmin.myNfcRecord> records=new ArrayList<NfcAdmin.myNfcRecord>();
 
@@ -32,7 +34,8 @@ public class SubmitFragment extends Fragment {
     public void addContent(NfcAdmin.myNfcRecord record) {
         records.add(record);
         dad.getNfcAdmin().appendRecord(record);
-        //if(list!=null) Toast.makeText(this.getActivity(),list.getCount(),Toast.LENGTH_SHORT).show();
+        stacklist.postInvalidate();
+        //if(stacklist!=null) Toast.makeText(this.getActivity(),stacklist.getCount(),Toast.LENGTH_SHORT).show();
     }
 
 
@@ -40,9 +43,17 @@ public class SubmitFragment extends Fragment {
         dad=(MainActivity)getActivity();
         nfcAdmin = ((MainActivity) getActivity()).getNfcAdmin();
         View view = inflater.inflate(R.layout.fragment_submit, container, false);
-        list=(ListView)view.findViewById(R.id.submit_list);
+        stacklist=(StackView)view.findViewById(R.id.submit_stackList);
         btnSubmit=(Button)view.findViewById(R.id.submit_btnSubmit);
-        list.setAdapter(new BaseAdapter() {
+        btnErase=(Button)view.findViewById(R.id.submit_btnErase);
+        tvContent=(TextView)view.findViewById(R.id.submit_tvContent);
+        tvIndex=(TextView)view.findViewById(R.id.submit_tvIndex);
+        tvType=(TextView)view.findViewById(R.id.submit_tvType);
+        TextView tv=new TextView(dad);
+        tv.setText("NOTHING TO SHOW");
+        tv.setTextSize(40);
+        stacklist.setEmptyView(tv);
+        stacklist.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
                 return records.size();
@@ -61,32 +72,54 @@ public class SubmitFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 //main part
-                LinearLayout ll= (convertView==null) ? (LinearLayout)inflater.inflate(R.layout.submit_unit, list, false) : (LinearLayout)convertView;
-                TextView tvName=(TextView)ll.getChildAt(0);
-                TextView tvSub=(TextView)ll.getChildAt(1);
-                switch(records.get(position).msgType){
+                ImageView img = new ImageView(dad);
+                img.setMinimumWidth(300);
+                img.setMinimumHeight(300);
+                switch (records.get(position).getmsgType()) {
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_WIFI:
-                        ll.setBackgroundColor(Color.BLUE);
-                        tvName.setText("WIFI");
+                        img.setBackground(getResources().getDrawable(R.mipmap.wifi_unit));
                         break;
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_URL:
-                        ll.setBackgroundColor(Color.RED);
-                        tvName.setText("URL");
+                        img.setBackground(getResources().getDrawable(R.mipmap.url_unit));
                         break;
                     case NfcAdmin.myNfcRecord.EKNFC_TYPE_STARTAPP:
-                        ll.setBackgroundColor(Color.GREEN);
-                        tvName.setText("APP");
+                        //TODO get an image of app
                         break;
                     default:
                 }
-                tvSub.setText("    "+records.get(position).toString());
-                return ll;
+                return img;
+            }
+        });
+        stacklist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tvContent.setText(records.get(position).toString());
+                tvType.setText(records.get(position).getmsgTypeString());
+                tvIndex.setText((position + 1) + "/" + parent.getCount());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        stacklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                tvContent.setText(records.get(position).toString());
+                tvType.setText(records.get(position).getmsgTypeString());
+                tvIndex.setText((position + 1) + "/" + parent.getCount());
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dad.setToWrite();
+            }
+        });
+        btnErase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stacklist.removeViewAt(stacklist.getSelectedItemPosition());
             }
         });
         return view;
