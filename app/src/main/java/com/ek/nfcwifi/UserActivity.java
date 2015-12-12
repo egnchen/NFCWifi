@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 public class UserActivity extends FlowActivity{
     NfcAdmin nfcadmin;
+    WifiAdmin wifiAdmin;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //相关初始化
@@ -20,18 +21,21 @@ public class UserActivity extends FlowActivity{
         setContentView(R.layout.activity_user);
         content=findViewById(R.id.user_Content);
         menu=findViewById(R.id.user_Menu);
+        wifiAdmin=new WifiAdmin(this);
         initValues();
         content.setOnTouchListener(this);
         if (MainActivity.myInstance!=null) nfcadmin=MainActivity.myInstance.getNfcAdmin();
         else {Toast.makeText(this,"Wops, no instance found.",Toast.LENGTH_SHORT).show();return;}
         //menu初始化
-        Toast.makeText(this,"begin",Toast.LENGTH_SHORT).show();
         for(NfcAdmin.myNfcRecord i:nfcadmin.getRecordList_get()){
             TextView tv=new TextView(this);
             tv.setText(i.toString());
             tv.setTextColor(Color.WHITE);
             tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            Toast.makeText(this,"get:"+i.toString(),Toast.LENGTH_SHORT).show();
+            if(i.getmsgType()==i.EKNFC_TYPE_WIFI){
+                wifiAdmin.openWifi();
+
+            }
             ((LinearLayout)menu).addView(tv);
         }
         initValues();

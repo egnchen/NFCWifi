@@ -134,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
             //读tag
             wifiAdmin.openWifi();
             nfcAdmin.readTag(intent);
-            if(nfcAdmin.getRecordList().size()>0) {
+            if(nfcAdmin.getRecordList_get().size()>0) {
                 Intent startActivityIntent = new Intent();
                 startActivityIntent.setClass(MainActivity.this, UserActivity.class);
                 startActivity(startActivityIntent);

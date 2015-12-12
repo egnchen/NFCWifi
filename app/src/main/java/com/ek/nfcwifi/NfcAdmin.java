@@ -139,7 +139,7 @@ public class NfcAdmin {
             ndefRecord=NdefRecord.createUri(url_scheme+"://"+url_host+"/"+url_path);
             value=packageName;
         }
-
+        
 
         public NdefRecord getNdefRecord(){
             return ndefRecord;
