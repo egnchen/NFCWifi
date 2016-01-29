@@ -19,14 +19,12 @@ import java.util.ArrayList;
  * Created by eyeKill on 15/10/31.
  */
 public class SubmitFragment extends Fragment {
-
     private NfcAdmin nfcAdmin;
     MainActivity dad;
 
     StackView stacklist;
     Button btnSubmit,btnErase;
     TextView tvIndex,tvContent,tvType;
-    int idOffset=106;
 
     ArrayList<NfcAdmin.myNfcRecord> records=new ArrayList<NfcAdmin.myNfcRecord>();
 
@@ -116,12 +114,12 @@ public class SubmitFragment extends Fragment {
                 dad.setToWrite();
             }
         });
-        btnErase.setOnClickListener(new View.OnClickListener() {
+        /*btnErase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stacklist.removeViewAt(stacklist.getSelectedItemPosition());
+                stacklist.removeAllViews();
             }
-        });
+        });*/
         return view;
     }
 }

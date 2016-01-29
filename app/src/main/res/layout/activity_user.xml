@@ -15,17 +15,24 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/user_Content"
         android:background="@mipmap/user_background">
 
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="20dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to..."
-            android:id="@+id/user_tvWelcome"/>
-    </LinearLayout>
+            android:layout_centerInParent="true"
+            android:text="Welcome, unknown user!"/>
+
+    </RelativeLayout>
 </LinearLayout>

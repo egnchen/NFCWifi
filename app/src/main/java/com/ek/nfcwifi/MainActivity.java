@@ -107,13 +107,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        nfcAdmin.nfcAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);//注册前台抓取
+        if(nfcAdmin!=null) nfcAdmin.nfcAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);//注册前台抓取
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        nfcAdmin.nfcAdapter.disableForegroundDispatch(this);//反注册前台抓取
+        if(nfcAdmin!=null) nfcAdmin.nfcAdapter.disableForegroundDispatch(this);//反注册前台抓取
     }
 
     @Override

@@ -19,7 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class WifiAdmin {
     private Context dad;
@@ -27,6 +29,11 @@ public class WifiAdmin {
     private WifiInfo mWifiInfo;
     private List<ScanResult> mWifiList;
     private List<WifiConfiguration> mWifiConfigurations;
+    public interface onWifiConnectionEstablishedListener{
+        void run();
+    }
+    private onWifiConnectionEstablishedListener listner;
+
     public WifiAdmin(Context context){
         //取得WifiManager对象
         mWifiManager=(WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -77,8 +84,9 @@ public class WifiAdmin {
     public List<String> getWifiNames(){
         getScanList();
         ArrayList<String> r=new ArrayList<String>();
-        for(ScanResult s:mWifiList) r.add(s.SSID);
-        return r;
+        HashSet<String> s=new HashSet<String>();
+        for(ScanResult a:mWifiList) s.add(a.SSID);
+        return new ArrayList<String>(s);
     }
 
 
@@ -147,7 +155,7 @@ public class WifiAdmin {
     }
 
 
-    static WifiConfiguration createConf(String SSID,String pwd){
+    public static WifiConfiguration createConf(String SSID,String pwd){
         WifiConfiguration c=new WifiConfiguration();
         c.SSID=SSID;
         c.preSharedKey=pwd;
@@ -206,5 +214,9 @@ public class WifiAdmin {
                 handler.sendEmptyMessage(0);//failed
             }
         }).start();
+    }
+
+    public void setListner(onWifiConnectionEstablishedListener listener){
+        this.listner=listener;
     }
 }

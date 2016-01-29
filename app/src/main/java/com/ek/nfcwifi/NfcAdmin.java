@@ -51,10 +51,13 @@ public class NfcAdmin {
             Log.i(context.getPackageName(), n.toString());
             if (n != null && n.getTnf() == NdefRecord.TNF_WELL_KNOWN) {
                 Uri uri = n.toUri();
-                Log.i(context.getPackageName(), uri.toString());
-                if (uri.getScheme().equals("eknfc")&&uri.getHost().equals("wifi")) {
+                //Log.i(context.getPackageName(), uri.toString());
+                if (uri.getScheme().equals("eknfc")&&uri.getHost().substring(0,uri.toString().lastIndexOf('?')).equals("wifi")) {
                         try {
-                            JSONObject j=new JSONObject(uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4));
+                            String a=uri.toString().substring(uri.toString().lastIndexOf('?')+1);
+                            Log.i(context.getPackageName(),"got wifi message.");
+                            Log.i(context.getPackageName(),a);
+                            JSONObject j=new JSONObject(urlEncrypter.decrypt(a,context.getPackageName()));
                             RecordList_get.add(getRecord_wifi(j));
                         } catch (JSONException e) {
                             Log.e(context.getPackageName(),uri.toString().substring(uri.getScheme().length() + uri.getHost().length() + 4));
@@ -102,6 +105,8 @@ public class NfcAdmin {
         private int msgType;
         String value;
 
+        String ssid,pwd;
+
         public static final int EKNFC_TYPE_WIFI=1;
         public static final int EKNFC_TYPE_URL=2;
         public static final int EKNFC_TYPE_STARTAPP=3;
@@ -120,9 +125,12 @@ public class NfcAdmin {
             String url_scheme="eknfc";
             String url_host="wifi";
             String url_path=WifiAdmin.createWifiJson(conf.SSID,conf.preSharedKey).toString();
+            url_path=urlEncrypter.encrypt(url_path,context.getPackageName());
             msgType=EKNFC_TYPE_WIFI;
-            ndefRecord=NdefRecord.createUri(url_scheme+"://"+url_host+"/"+url_path);
+            ndefRecord=NdefRecord.createUri(url_scheme+"://"+url_host+"?"+url_path);
             value=conf.SSID;
+            ssid=conf.SSID;
+            pwd=conf.preSharedKey;
         }
 
         public myNfcRecord(String url){
@@ -139,7 +147,7 @@ public class NfcAdmin {
             ndefRecord=NdefRecord.createUri(url_scheme+"://"+url_host+"/"+url_path);
             value=packageName;
         }
-        
+
 
         public NdefRecord getNdefRecord(){
             return ndefRecord;

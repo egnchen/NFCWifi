@@ -21,7 +21,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="erase this"
+        android:text="erase all"
         android:layout_alignParentRight="true"
         android:id="@+id/submit_btnErase"
         android:layout_above="@id/submit_btnSubmit"/>
